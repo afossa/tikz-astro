@@ -14,7 +14,7 @@
 % You should have received a copy of the GNU Affero General Public License
 % along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-\documentclass{standalone}
+\documentclass[multi]{standalone}
 
 \usepackage{physics}
 \usepackage[svgnames]{xcolor}
@@ -22,6 +22,7 @@
 
 \begin{document}
 
+% definition of Classical Orbital Elements
 \tdplotsetmaincoords{70}{110}
 \begin{tikzpicture}[tdplot_main_coords,scale=5]
 
@@ -32,20 +33,25 @@
     \pgfmathsetmacro{\w}{80} % argument of periapsis
     \pgfmathsetmacro{\v}{35} % true anomaly
 
+    \pgfmathsetmacro{\c}{\W-90} % first rotation about z
+    \pgfmathsetmacro{\b}{\i}    % second rotation about y'
+    \pgfmathsetmacro{\a}{\w+90} % third rotation about z''
+    \pgfmathsetmacro{\u}{\a+\v} % third rotation about z''
+
     \coordinate (O) at (0,0,0) node[below] {$O$};
     \draw[->,thick] (O) -- (2,0,0) node[below] {$X$};
-    \draw[->,thick] (O) -- (0,1,0) node[right] {$Y$};
+    \draw[->,thick] (O) -- (0,1.2,0) node[right] {$Y$};
     \draw[->,thick] (O) -- (0,0,1) node[right] {$Z$};
 
     \tdplotdrawarc[dashed]{(O)}{\r}{0}{360}{}{}
+    \tdplotdrawarc[->,thick]{(O)}{.4*\r}{0}{\W}{below}{$\Omega$}
     \node[text width=5em] at (0,-1.15*\r,0) {Reference plane};
     \node at (1.7,.4,0) {Orbit plane};
-    \tdplotdrawarc[->,thick]{(O)}{.4*\r}{0}{\W}{below}{$\Omega$}
 
     \tdplotsetrotatedcoords{\W}{0}{0}
     \draw[tdplot_rotated_coords,->,thick] (-1,0,0) -- (1.5,0,0) node[below right] {Line of nodes};
 
-    \tdplotsetrotatedcoords{-\W}{\i}{0}
+    \tdplotsetrotatedcoords{\c}{\b}{0}
     \tdplotdrawarc[tdplot_rotated_coords]{(O)}{\r}{0}{360}{}{}
     \begin{scope}[tdplot_rotated_coords]
         \draw[->,thick] (O) -- (0,0,1) node[left,yshift=-3] {$\vb*{h}$};
@@ -53,29 +59,29 @@
         \tdplotdrawarc[->,thick]{(O)}{.4*\r}{90+\w}{90+\w+\v}{above right,yshift=-3}{$\nu$}
     \end{scope}
 
-    \tdplotsetrotatedcoords{-\W}{\i}{90+\w}
+    \tdplotsetrotatedcoords{\c}{\b}{\a}
     \begin{scope}[tdplot_rotated_coords]
         \draw[->,thick] (O) -- (1,0,0) node[below right,xshift=-3] {$\vb*{e}$};
         \coordinate (R) at (\r,0,0);
     \end{scope}
 
-    \tdplotsetrotatedcoords{-\W}{\i}{90+\w+\v}
+    \tdplotsetrotatedcoords{\c}{\b}{\u}
     \begin{scope}[tdplot_rotated_coords]
         \draw[->,thick] (O) -- (\r,0,0) node[below right,xshift=-3] {$\vb*{r}$};
         \coordinate (P) at (\r,0,0);
     \end{scope}
 
     \coordinate (N) at (\W:\r);
-    \tdplotsetrotatedcoords{-\W-90}{90}{0}
+    \tdplotsetrotatedcoords{\c-90}{90}{0}
     \begin{scope}[tdplot_rotated_coords]
         \tdplotdrawarc[->,thick]{(O)}{.75*\r}{180}{180-\i}{above right,yshift=2}{$i$}
         \tdplotdrawarc[->,thick]{(N)}{.25*\r}{-93}{-94-\i}{right,yshift=4}{$i$}
     \end{scope}
 
-    \tdplotsetrotatedcoords{-\W}{\i}{\w+\v}
+    \tdplotsetrotatedcoords{\c}{\b}{\u+90}
     \tdplotsetrotatedcoordsorigin{(P)}
     \begin{scope}[tdplot_rotated_coords]
-        \draw [->,thick] (P) -- (-.25,0,0) node [above] {$\vb*{v}$};
+        \draw [->,thick] (P) -- (.25,0,0) node [above] {$\vb*{v}$};
     \end{scope}
 
     \fill (P) circle (.05ex) node[above] {$P$};
@@ -83,5 +89,53 @@
     \fill (R) circle (.05ex) node[below right,xshift=2,yshift=2] {Perigee};
 
 \end{tikzpicture}
+
+\newpage
+
+% rotations in TikZ
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[tdplot_main_coords,scale=5]
+
+    \tikzset{>=stealth}
+    \pgfmathsetmacro{\r}{.5}
+    \pgfmathsetmacro{\ph}{55}
+    \pgfmathsetmacro{\th}{75}
+    \pgfmathsetmacro{\ps}{45}
+
+    \coordinate (O) at (0,0,0) node[below] {$O$};
+    \draw[->,thick] (O) -- (1,0,0) node[below] {$X$};
+    \draw[->,thick] (O) -- (0,1,0) node[right] {$Y$};
+    \draw[->,thick] (O) -- (0,0,1) node[right] {$Z$};
+
+    \tdplotdrawarc[->,thick,blue]{(O)}{\r}{0}{\ph}{below}{$\phi$}
+
+    \tdplotsetrotatedcoords{\ph}{0}{0}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick,blue] (O) -- (1,0,0) node[below] {$x'$};
+        \draw[->,thick,blue] (O) -- (0,1,0) node[right] {$y'$};
+        \draw[->,thick,blue] (O) -- (0,0,1) node[left] {$z'$};
+    \end{scope}
+
+    \tdplotsetthetaplanecoords{\ph}
+    \tdplotdrawarc[tdplot_rotated_coords,->,thick,red]{(O)}{\r}{90}{90+\th}{right}{$\theta$}
+
+    \tdplotsetrotatedcoords{\ph}{\th}{0}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick,red] (O) -- (1,0,0) node[below] {$x''$};
+        \draw[->,thick,red] (O) -- (0,1,0) node[above] {$y''$};
+        \draw[->,thick,red] (O) -- (0,0,1) node[right] {$z''$};
+        \tdplotdrawarc[->,thick,green]{(O)}{\r}{0}{\ps}{below}{$\psi$}
+    \end{scope}
+
+    \tdplotsetrotatedcoords{\ph}{\th}{\ps}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick,green] (O) -- (1,0,0) node[below] {$x'''$};
+        \draw[->,thick,green] (O) -- (0,1,0) node[right] {$y'''$};
+        \draw[->,thick,green] (O) -- (0,0,1) node[above] {$z'''$};
+    \end{scope}
+
+\end{tikzpicture}
+
+\newpage
 
 \end{document}
