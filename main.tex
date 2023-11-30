@@ -13,3 +13,75 @@
 
 % You should have received a copy of the GNU Affero General Public License
 % along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+\documentclass{standalone}
+
+\usepackage{physics}
+\usepackage[svgnames]{xcolor}
+\usepackage{tikz,tikz-3dplot}
+
+\begin{document}
+
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[tdplot_main_coords,scale=5]
+
+    \tikzset{>=stealth}
+    \pgfmathsetmacro{\r}{.8}
+    \pgfmathsetmacro{\W}{45} % right ascension of ascending node
+    \pgfmathsetmacro{\i}{30} % inclination
+    \pgfmathsetmacro{\w}{80} % argument of periapsis
+    \pgfmathsetmacro{\v}{35} % true anomaly
+
+    \coordinate (O) at (0,0,0) node[below] {$O$};
+    \draw[->,thick] (O) -- (2,0,0) node[below] {$X$};
+    \draw[->,thick] (O) -- (0,1,0) node[right] {$Y$};
+    \draw[->,thick] (O) -- (0,0,1) node[right] {$Z$};
+
+    \tdplotdrawarc[dashed]{(O)}{\r}{0}{360}{}{}
+    \node[text width=5em] at (0,-1.15*\r,0) {Reference plane};
+    \node at (1.7,.4,0) {Orbit plane};
+    \tdplotdrawarc[->,thick]{(O)}{.4*\r}{0}{\W}{below}{$\Omega$}
+
+    \tdplotsetrotatedcoords{\W}{0}{0}
+    \draw[tdplot_rotated_coords,->,thick] (-1,0,0) -- (1.5,0,0) node[below right] {Line of nodes};
+
+    \tdplotsetrotatedcoords{-\W}{\i}{0}
+    \tdplotdrawarc[tdplot_rotated_coords]{(O)}{\r}{0}{360}{}{}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick] (O) -- (0,0,1) node[left,yshift=-3] {$\vb*{h}$};
+        \tdplotdrawarc[->,thick]{(O)}{.4*\r}{90}{90+\w}{right}{$\omega$}
+        \tdplotdrawarc[->,thick]{(O)}{.4*\r}{90+\w}{90+\w+\v}{above right,yshift=-3}{$\nu$}
+    \end{scope}
+
+    \tdplotsetrotatedcoords{-\W}{\i}{90+\w}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick] (O) -- (1,0,0) node[below right,xshift=-3] {$\vb*{e}$};
+        \coordinate (R) at (\r,0,0);
+    \end{scope}
+
+    \tdplotsetrotatedcoords{-\W}{\i}{90+\w+\v}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick] (O) -- (\r,0,0) node[below right,xshift=-3] {$\vb*{r}$};
+        \coordinate (P) at (\r,0,0);
+    \end{scope}
+
+    \coordinate (N) at (\W:\r);
+    \tdplotsetrotatedcoords{-\W-90}{90}{0}
+    \begin{scope}[tdplot_rotated_coords]
+        \tdplotdrawarc[->,thick]{(O)}{.75*\r}{180}{180-\i}{above right,yshift=2}{$i$}
+        \tdplotdrawarc[->,thick]{(N)}{.25*\r}{-93}{-94-\i}{right,yshift=4}{$i$}
+    \end{scope}
+
+    \tdplotsetrotatedcoords{-\W}{\i}{\w+\v}
+    \tdplotsetrotatedcoordsorigin{(P)}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw [->,thick] (P) -- (-.25,0,0) node [above] {$\vb*{v}$};
+    \end{scope}
+
+    \fill (P) circle (.05ex) node[above] {$P$};
+    \fill (N) circle (.05ex) node[below right,xshift=6,yshift=6] {Ascending node};
+    \fill (R) circle (.05ex) node[below right,xshift=2,yshift=2] {Perigee};
+
+\end{tikzpicture}
+
+\end{document}
