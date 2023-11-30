@@ -138,4 +138,48 @@
 
 \newpage
 
+% definition of Radial, along-track, cross-track frame
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[tdplot_main_coords,scale=5]
+
+    \tikzset{>=stealth}
+    \pgfmathsetmacro{\r}{.8}
+    \pgfmathsetmacro{\W}{45} % right ascension of ascending node
+    \pgfmathsetmacro{\i}{30} % inclination
+    \pgfmathsetmacro{\w}{80} % argument of periapsis
+    \pgfmathsetmacro{\v}{20} % true anomaly
+
+    \pgfmathsetmacro{\c}{\W-90} % first rotation about z
+    \pgfmathsetmacro{\b}{\i}    % second rotation about y'
+    \pgfmathsetmacro{\a}{\w+90} % third rotation about z''
+    \pgfmathsetmacro{\u}{\a+\v} % third rotation about z''
+
+    \coordinate (O) at (0,0,0) node[below] {$O$};
+    \draw[->,thick] (O) -- (2,0,0) node[below] {$X$};
+    \draw[->,thick] (O) -- (0,1.2,0) node[right] {$Y$};
+    \draw[->,thick] (O) -- (0,0,1) node[right] {$Z$};
+
+    \tdplotdrawarc[dashed]{(O)}{\r}{0}{360}{}{}
+
+    \tdplotsetrotatedcoords{\c}{\b}{0}
+    \tdplotdrawarc[tdplot_rotated_coords]{(O)}{\r}{0}{360}{}{}
+
+    \tdplotsetrotatedcoords{\c}{\b}{\u}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,thick] (O) -- (\r,0,0) node[below,yshift=-3] {$\vb*{r}$};
+        \coordinate (P) at (\r,0,0);
+    \end{scope}
+
+    \tdplotsetrotatedcoordsorigin{(P)}
+    \begin{scope}[tdplot_rotated_coords,scale=.25]
+        \draw[->,thick] (P) -- (1,0,0) node[below,xshift=4] {$\hat{\vb*{e}}_r$};
+        \draw[->,thick] (P) -- (0,1,0) node[below] {$\hat{\vb*{e}}_s$};
+        \draw[->,thick] (P) -- (0,0,1) node[right,yshift=2] {$\hat{\vb*{e}}_w$};
+    \end{scope}
+
+    \fill (P) circle (.05ex);
+    \node at (1.7,0.4,0) {Osculating orbit};
+
+\end{tikzpicture}
+
 \end{document}
