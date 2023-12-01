@@ -171,6 +171,7 @@
     \begin{scope}[tdplot_rotated_coords]
         \draw (-\a*\e,0,0) ellipse [x radius=\a,y radius=\b];
         \draw[->,thick] (O) -- (\x,\y,0) node[below,yshift=-3] {$\vb*{r}$};
+        \draw[->,thick] (O) -- (0,0,1) node[left,yshift=-3] {$\vb*{h}$};
         \coordinate (P) at (\x,\y,0);
     \end{scope}
 
