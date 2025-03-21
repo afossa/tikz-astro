@@ -19,6 +19,7 @@
 \usepackage{physics}
 \usepackage[svgnames]{xcolor}
 \usepackage{tikz,tikz-3dplot}
+\usetikzlibrary{arrows.meta}
 
 \begin{document}
 
@@ -190,6 +191,50 @@
 
     \fill (P) circle (.05ex);
     \node at (1.1,0.5,0) {Osculating orbit};
+
+\end{tikzpicture}
+
+\newpage
+
+% definition of the CR3BP synodic frame
+\tdplotsetmaincoords{60}{-15}
+\begin{tikzpicture}[tdplot_main_coords,scale=5]
+
+    \tikzset{>={Stealth}}
+    \pgfmathsetmacro{\ph}{30}
+    \pgfmathsetmacro{\lwi}{.5mm}
+    \pgfmathsetmacro{\lwr}{.25mm}
+    \pgfmathsetmacro{\rw}{0.1}
+
+    \coordinate (O) at (0,0,0);
+    \draw[->,line width=\lwi] (O) -- (1,0,0) node[below] {$X$};
+    \draw[->,line width=\lwi] (O) -- (0,1,0) node[below, xshift=-5, yshift=-5] {$Y$};
+    \draw[->,line width=\lwi] (O) -- (0,0,1) node[right] {$Z$};
+
+    \tdplotsetrotatedcoords{\ph}{0}{0}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[line width=\lwr] (O) -- (-.5,0,0);
+        \draw[->,line width=\lwr] (O) -- (1,0,0) node[below] {$x$};
+        \draw[->,line width=\lwr] (O) -- (0,1,0) node[below, yshift=-2] {$y$};
+        \draw[->,line width=\lwr] (O) -- (0,0,1) node[left] {$z$};
+        \coordinate (P1) at (-.25,0,0);
+        \coordinate (P2) at (.75,0,0);
+        \coordinate (P) at (.75,.25,.5);
+        \draw[->,line width=\lwr] (P1) -- (P) node[midway, left, xshift=15, yshift=25] {$\vb*{r}_1$};
+        \draw[->,line width=\lwr] (P2) -- (P) node[midway, right] {$\vb*{r}_2$};
+        \draw[->,line width=\lwr] (O) -- (P) node[midway, right] {$\vb*{r}$};
+    \end{scope}
+
+    \coordinate (A) at (0,0,.85);
+    \tdplotsetrotatedcoordsorigin{(A)}
+    \begin{scope}[tdplot_rotated_coords]
+        \draw[->,line width=\lwi,red] (-\rw,0,0) arc[start angle=90, end angle=390, radius=\rw] node[right, xshift=7] {$\vb*{\omega}$};
+    \end{scope}
+
+    \fill (O) circle (.1ex) node[below] {$O$};
+    \fill (P1) circle (.1ex) node[below right] {$P_1$};
+    \fill (P2) circle (.1ex) node[below right] {$P_2$};
+    \fill (P) circle (.1ex) node[above right] {$P_3$};
 
 \end{tikzpicture}
 
